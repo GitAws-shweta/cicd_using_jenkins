@@ -1,0 +1,99 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Ludo Game</title>
+<style>
+  body { font-family: Arial; text-align: center; background: #f4f4f4; }
+  h1 { margin: 10px; }
+  #board { display: grid; grid-template-columns: repeat(15, 30px); margin: auto; }
+  .cell { width: 30px; height: 30px; border: 1px solid #ccc; }
+  .red { background: red; }
+  .green { background: green; }
+  .yellow { background: yellow; }
+  .blue { background: blue; }
+  .path { background: white; }
+  .safe { background: lightgray; }
+  #controls { margin: 15px; }
+  button { padding: 10px 20px; font-size: 16px; }
+  .token { border-radius: 50%; width: 20px; height: 20px; margin: auto; }
+</style>
+</head>
+<body>
+<h1>Ludo Game 🎲</h1>
+<div id="board"></div>
+<div id="controls">
+  <button onclick="rollDice()">Roll Dice</button>
+  <p id="diceResult">Roll: -</p>
+  <p id="turn">Turn: Red</p>
+</div>
+
+<script>
+const board = document.getElementById("board");
+const size = 15;
+
+// Create board
+for (let i = 0; i < size * size; i++) {
+  let cell = document.createElement("div");
+  cell.classList.add("cell", "path");
+  board.appendChild(cell);
+}
+
+// Players
+let players = [
+  { color: "red", position: 0 },
+  { color: "green", position: 0 },
+  { color: "yellow", position: 0 },
+  { color: "blue", position: 0 }
+];
+
+let currentPlayer = 0;
+
+function rollDice() {
+  let roll = Math.floor(Math.random() * 6) + 1;
+  document.getElementById("diceResult").innerText = "Roll: " + roll;
+
+  movePlayer(players[currentPlayer], roll);
+
+  if (roll !== 6) {
+    currentPlayer = (currentPlayer + 1) % players.length;
+  }
+
+  document.getElementById("turn").innerText = "Turn: " + players[currentPlayer].color;
+}
+
+function movePlayer(player, steps) {
+  player.position += steps;
+  if (player.position >= size * size) {
+    alert(player.color + " wins!");
+    resetGame();
+    return;
+  }
+  renderTokens();
+}
+
+function renderTokens() {
+  let cells = document.querySelectorAll(".cell");
+  cells.forEach(c => c.innerHTML = "");
+
+  players.forEach(p => {
+    let token = document.createElement("div");
+    token.classList.add("token");
+    token.style.background = p.color;
+
+    let cell = cells[p.position];
+    if (cell) cell.appendChild(token);
+  });
+}
+
+function resetGame() {
+  players.forEach(p => p.position = 0);
+  currentPlayer = 0;
+  renderTokens();
+}
+
+renderTokens();
+</script>
+</body>
+</html>
