@@ -41,7 +41,7 @@ pipeline {
         }
         success {
             echo "creating the artifact"
-            sh 'tar -cv demo.tar index.html'
+            sh 'tar -cvf demo.tar index.html'
         }
     }
 }
